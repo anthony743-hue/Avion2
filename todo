@@ -1,0 +1,28 @@
+[ ] Avion
+    Attributs :
+        [ ] Vecteur_Position (m)
+        [ ] Vecteur_vitesse (km/h)
+        [ ] Vecteur_Acceleration (m/secondes^2)
+        [ ] Vecteur_Acceleration_min (m/secondes^2)
+        [ ] Vitesse_Decrochage (vitesse a partir duquelle l'avion ) (en km/h)
+        [ ] Distance Restant (par rapport a la piste d'atterissage)
+
+    Methodes :
+        - Setter (avec regle de gestion)
+        - update
+
+[ ] FileManager (classe pour les methodes qui touche au fichier)
+
+[ ] Panel pour entre les donnees (Formulaire)
+    [ ] Altitude  (Position X == 0 par defaut)
+    [ ] Vitesse (Vx,Vy)
+    [ ] Vecteur_Acceleration_min
+    [ ] Vitesse_Decrochage
+    [ ] Distance Restante
+
+[ ] Panel du timer
+    [ ] DrawTimer
+
+[ ] Panel Global    
+    [ ] 
+    [ ] 
