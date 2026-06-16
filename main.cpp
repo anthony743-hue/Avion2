@@ -1,12 +1,12 @@
+#include "GlobalPanel.h"
 #include <QApplication>
-#include <QWidget>
 
 int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);   // 1. Initialise l'application
+    QApplication app(argc, argv);
 
-    QWidget fenetre;               // 2. Crée une fenêtre
-    fenetre.resize(400, 300);
+    GlobalPanel fenetre;           // Panel global de la simulation
+    fenetre.resize(1000, 560);
     fenetre.show();
 
-    return app.exec();             // 3. Démarre la boucle événementielle
+    return app.exec();             // Démarre la boucle événementielle
 }

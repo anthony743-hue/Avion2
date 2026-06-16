@@ -1,8 +1,6 @@
 #pragma once
 #include <QLineEdit>
-
-
-using namespace std;
+#include <string>
 
 enum class InputType {
     Text,    // Aucune restriction (ou non vide)
@@ -10,21 +8,23 @@ enum class InputType {
     Date
 };
 
-class InputField : public QLin {
-public :
-    InputField(const string& label, InputType type);
+// Champ de saisie : un QLineEdit enrichi d'un libellé et d'une règle de
+// validation (texte / nombre / date).
+class InputField : public QLineEdit {
+public:
+    explicit InputField(const std::string &label, InputType type, QWidget *parent = nullptr);
 
-    void setValue(const string& value);
-    string getValue() const { return m_value; }
+    void setValue(const std::string &value);
+    std::string getValue() const;
     float getFloat() const;
     void validate() const;
 
+    const std::string &label() const { return m_label; }
     InputType type() const { return m_type; }
 
-private :
-    string m_label;
+private:
+    std::string m_label;
     InputType m_type;
-    string m_value;
 
     void validateNumber() const;
 };

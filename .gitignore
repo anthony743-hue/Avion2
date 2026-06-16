@@ -1,0 +1,7 @@
+# Build artifacts
+/build/
+*.o
+*.obj
+
+# Exécutable
+/avion_sim

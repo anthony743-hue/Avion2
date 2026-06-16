@@ -1,36 +1,44 @@
 #include "InputField.h"
-#include <iostream>
 #include <charconv>
+#include <stdexcept>
 #include <system_error>
 
 using namespace std;
 
-InputField::InputField(const string& label, InputType type) :
-    m_label(label), m_type(type)
-{}
+InputField::InputField(const string &label, InputType type, QWidget *parent) :
+    QLineEdit(parent), m_label(label), m_type(type)
+{
+    setPlaceholderText(QString::fromStdString(label));
+}
 
-void InputField::setValue(const string& value){
-    m_value = value;
+void InputField::setValue(const string &value) {
+    setText(QString::fromStdString(value));
+}
+
+string InputField::getValue() const {
+    return text().toStdString();
 }
 
 void InputField::validate() const {
-    switch (m_type){
+    switch (m_type) {
         case InputType::Number:
             validateNumber();
             break;
         default:
+            if (text().trimmed().isEmpty())
+                throw invalid_argument("Le champ \"" + m_label + "\" ne doit pas être vide.");
             break;
     }
 }
 
 void InputField::validateNumber() const {
+    const string value = getValue();
     float f = 0.f;
-    auto [ptr, ec] = from_chars(m_value.data(), m_value.data() + m_value.size(),f);
-    if( ec != errc{} || ptr != m_value.data() + m_value.size() )
-        throw invalid_argument("valeur numérique invalide (" + m_value + ")");
+    auto [ptr, ec] = from_chars(value.data(), value.data() + value.size(), f);
+    if (ec != errc{} || ptr != value.data() + value.size())
+        throw invalid_argument("Valeur numérique invalide pour \"" + m_label + "\" (" + value + ")");
 }
 
-float InputField::getFloat() const { 
-    return stof(m_value);
+float InputField::getFloat() const {
+    return stof(getValue());
 }
-
