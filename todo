@@ -31,3 +31,5 @@
     [x] Bouton Stop (arrete la simulation et le timer)
     [x] Bouton Reprendre (reprend depuis la derniere position)
     [x] Bouton Reinitialiser
+    [ ] Bouton ajouter GammaX 
+    [ ] Bouton ajouter GammaY
