@@ -1,28 +1,33 @@
-[ ] Avion
+[x] Avion
     Attributs :
-        [ ] Vecteur_Position (m)
-        [ ] Vecteur_vitesse (km/h)
-        [ ] Vecteur_Acceleration (m/secondes^2)
-        [ ] Vecteur_Acceleration_min (m/secondes^2)
-        [ ] Vitesse_Decrochage (vitesse a partir duquelle l'avion ) (en km/h)
-        [ ] Distance Restant (par rapport a la piste d'atterissage)
+        [x] Vecteur_Position (m)
+        [x] Vecteur_vitesse (km/h)
+        [x] Vecteur_Acceleration (m/secondes^2)
+        [x] Vecteur_Acceleration_min (m/secondes^2)
+        [x] Vitesse_Decrochage (vitesse a partir duquelle l'avion ) (en km/h)
+        [x] Distance Restant (par rapport a la piste d'atterissage)
 
     Methodes :
-        - Setter (avec regle de gestion)
-        - update
+        - [x] Setter (avec regle de gestion)
+        - [x] update
 
-[ ] FileManager (classe pour les methodes qui touche au fichier)
+[x] FileManager (classe pour les methodes qui touche au fichier)
+    [x] sauvegarderParametres / chargerParametres
+    [x] sauvegarderTrajectoire
 
-[ ] Panel pour entre les donnees (Formulaire)
-    [ ] Altitude  (Position X == 0 par defaut)
-    [ ] Vitesse (Vx,Vy)
-    [ ] Vecteur_Acceleration_min
-    [ ] Vitesse_Decrochage
-    [ ] Distance Restante
+[x] Panel pour entre les donnees (Formulaire)
+    [x] Altitude  (Position X == 0 par defaut)
+    [x] Vitesse (Vx,Vy)
+    [x] Vecteur_Acceleration_min
+    [x] Vitesse_Decrochage
+    [x] Distance Restante
 
-[ ] Panel du timer
-    [ ] DrawTimer
+[x] Panel du timer
+    [x] DrawTimer
 
-[ ] Panel Global    
-    [ ] 
-    [ ] 
+[x] Panel Global
+    [x] Vue 2D de la simulation (trajectoire + piste)
+    [x] Bouton Lancer (demarre la simulation)
+    [x] Bouton Stop (arrete la simulation et le timer)
+    [x] Bouton Reprendre (reprend depuis la derniere position)
+    [x] Bouton Reinitialiser

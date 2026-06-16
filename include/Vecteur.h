@@ -1,6 +1,5 @@
+#pragma once
 #include <cmath>
-
-using namespace std;
 
 struct Vecteur
 {
@@ -14,8 +13,14 @@ struct Vecteur
         return {x * s, y * s};
     }
 
-    Vecteur operator+(const Vecteur& other) const {
+    Vecteur operator+(const Vecteur &other) const
+    {
         return {x + other.x, y + other.y};
+    }
+
+    Vecteur operator-(const Vecteur &other) const
+    {
+        return {x - other.x, y - other.y};
     }
 
     Vecteur &operator+=(const Vecteur &other)
@@ -24,8 +29,9 @@ struct Vecteur
         y += other.y;
         return *this;
     }
+
     float norme() const
     {
-        return sqrt(x * x + y * y);
+        return std::sqrt(x * x + y * y);
     }
 };

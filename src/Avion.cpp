@@ -29,6 +29,10 @@ void Avion::setAcceleration(const Vecteur& acceleration) {
     m_acceleration = acceleration;
 }
 
+void Avion::setAccelerationMin(const Vecteur& accMin) {
+    m_accelerationMin = accMin;
+}
+
 void Avion::setVitesseDecrochage(float vitesse_kmh) {
     if (vitesse_kmh <= 0.f) {
         throw invalid_argument("La vitesse de décrochage doit être positive.");
@@ -58,7 +62,8 @@ void Avion::update(float dt) {
 
     float norme =  m_vitesse.norme();
     // Détection simple du décrochage (perte de portance)
-    if (norme < m_vitesseDecrochage - EPSILON) {
+    m_enDecrochage = (norme < m_vitesseDecrochage - EPSILON);
+    if (m_enDecrochage) {
         cerr << "[AVION] Attention : vitesse en dessous du décrochage (" << norme * 3.6f << " km/h) !\n";
     }
 

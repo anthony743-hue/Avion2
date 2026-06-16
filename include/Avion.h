@@ -28,6 +28,14 @@ public:
     Vecteur getAccelerationMin() const { return m_accelerationMin; }
     float getVitesseDecrochage() const { return m_vitesseDecrochage * 3.6f; }
     float getDistanceRestante() const { return m_distanceRestante; }
+
+    // Vitesse scalaire courante (norme) en km/h
+    float getVitesseKmh() const { return m_vitesse.norme() * 3.6f; }
+    // Vrai si la vitesse est passée sous la vitesse de décrochage
+    bool estEnDecrochage() const { return m_enDecrochage; }
+    // Vrai si l'avion a atteint/dépassé la piste (distance restante nulle)
+    bool aAtterri() const { return m_distanceRestante <= EPSILON; }
+
     void update(float dt);
 private:
     Vecteur m_position;             // mètres
@@ -36,6 +44,7 @@ private:
     Vecteur m_accelerationMin;      // m/s² (limite inférieure, typiquement négative)
     float m_vitesseDecrochage;    // m/s
     float m_distanceRestante;     // mètres
+    bool m_enDecrochage = false;
 
     static constexpr float EPSILON = 1e-5f;
 };
