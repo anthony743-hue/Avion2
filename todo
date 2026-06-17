@@ -33,3 +33,16 @@
     [x] Bouton Reinitialiser
     [ ] Bouton ajouter GammaX 
     [ ] Bouton ajouter GammaY
+
+[ ] Ajouter la liste des instructions a executer pile au moment voulu
+
+[ ] Bien definir ce qu'est auto
+
+[ ] c'est quoi un QGroupBox
+
+Te rappelle tu du Formulaire sur lequel on entrait le Vecteur_Acceleration et Vecteur_Acceleration_min, il vont jouer un role important dans cette prochaine partie :
+J'aurais besoin maintenant que tu me prepare quatre boutons (il faudra qu'on reorganise un peu l'affichage) :
+    - Le premier + VGammaX  quand je clique (une seule fois suffira,ce sera de meme pour les trois autres) dessus cela augmentera Vx
+    - Le deuxieme - VGammaX quand je clique dessus cela reduira la vitesse Vy
+    - Le troisieme + VGammaX : la meme chose
+    - Le quatrieme - VGammeY : la meme chose
