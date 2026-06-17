@@ -2,12 +2,15 @@
 #include "FileManager.h"
 #include <QFileDialog>
 #include <QGridLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <algorithm>
+#include <cmath>
 #include <exception>
 
 GlobalPanel::GlobalPanel(QWidget *parent) : QWidget(parent) {
@@ -26,6 +29,15 @@ GlobalPanel::GlobalPanel(QWidget *parent) : QWidget(parent) {
     m_btnSauver = new QPushButton("Sauvegarder…", this);
     m_btnCharger = new QPushButton("Charger…", this);
 
+    m_btnVxPlus = new QPushButton("+ Vx (γx)", this);
+    m_btnVxMoins = new QPushButton("− Vx (γx min)", this);
+    m_btnVyPlus = new QPushButton("+ Vy (γy)", this);
+    m_btnVyMoins = new QPushButton("− Vy (γy min)", this);
+    m_btnVxPlus->setToolTip("Augmente Vx du pas |Accélération X|");
+    m_btnVxMoins->setToolTip("Réduit Vx du pas |Accélération min X|");
+    m_btnVyPlus->setToolTip("Augmente Vy du pas |Accélération Y|");
+    m_btnVyMoins->setToolTip("Réduit Vy du pas |Accélération min Y|");
+
     m_horloge = new QTimer(this);
     m_horloge->setInterval(kIntervalleMs);
 
@@ -39,20 +51,32 @@ GlobalPanel::GlobalPanel(QWidget *parent) : QWidget(parent) {
     colonneGauche->addLayout(fichiers);
     colonneGauche->addStretch();
 
-    // Boutons de contrôle.
-    auto *controles = new QHBoxLayout;
-    controles->addWidget(m_btnLancer);
-    controles->addWidget(m_btnStop);
-    controles->addWidget(m_btnReprendre);
-    controles->addWidget(m_btnReset);
+    // Groupe « Simulation » : Lancer / Stop / Reprendre / Réinitialiser.
+    auto *grilleControles = new QGridLayout;
+    grilleControles->addWidget(m_btnLancer, 0, 0);
+    grilleControles->addWidget(m_btnStop, 0, 1);
+    grilleControles->addWidget(m_btnReprendre, 1, 0);
+    grilleControles->addWidget(m_btnReset, 1, 1);
+    auto *groupeControles = new QGroupBox("Simulation", this);
+    groupeControles->setLayout(grilleControles);
 
-    // Colonne de droite : vue, timer, contrôles, statut.
+    // Groupe « Pilotage » : ajuste Vx / Vy en direct (2×2).
+    auto *grillePilotage = new QGridLayout;
+    grillePilotage->addWidget(m_btnVxPlus, 0, 0);
+    grillePilotage->addWidget(m_btnVyPlus, 0, 1);
+    grillePilotage->addWidget(m_btnVxMoins, 1, 0);
+    grillePilotage->addWidget(m_btnVyMoins, 1, 1);
+    auto *groupePilotage = new QGroupBox("Pilotage (vitesse)", this);
+    groupePilotage->setLayout(grillePilotage);
+
+    // Colonne de droite : vue, puis (timer + simulation + pilotage), statut.
     auto *colonneDroite = new QVBoxLayout;
     colonneDroite->addWidget(m_view, 1);
-    auto *ligneTimer = new QHBoxLayout;
-    ligneTimer->addWidget(m_timer);
-    ligneTimer->addLayout(controles, 1);
-    colonneDroite->addLayout(ligneTimer);
+    auto *ligneBas = new QHBoxLayout;
+    ligneBas->addWidget(m_timer);
+    ligneBas->addWidget(groupeControles);
+    ligneBas->addWidget(groupePilotage);
+    colonneDroite->addLayout(ligneBas);
     colonneDroite->addWidget(m_statut);
 
     auto *principal = new QHBoxLayout(this);
@@ -68,6 +92,10 @@ GlobalPanel::GlobalPanel(QWidget *parent) : QWidget(parent) {
     connect(m_btnReset, &QPushButton::clicked, this, &GlobalPanel::reinitialiser);
     connect(m_btnSauver, &QPushButton::clicked, this, &GlobalPanel::sauvegarder);
     connect(m_btnCharger, &QPushButton::clicked, this, &GlobalPanel::charger);
+    connect(m_btnVxPlus, &QPushButton::clicked, this, [this] { ajusterVitesse(true, true); });
+    connect(m_btnVxMoins, &QPushButton::clicked, this, [this] { ajusterVitesse(true, false); });
+    connect(m_btnVyPlus, &QPushButton::clicked, this, [this] { ajusterVitesse(false, true); });
+    connect(m_btnVyMoins, &QPushButton::clicked, this, [this] { ajusterVitesse(false, false); });
     connect(m_horloge, &QTimer::timeout, this, &GlobalPanel::tick);
 
     appliquerEtat(Etat::Vide);
@@ -84,6 +112,37 @@ void GlobalPanel::appliquerEtat(Etat etat) {
     m_btnReset->setEnabled(etat != Etat::Vide);
     m_form->setEditable(!enCours && !enPause);
     m_btnCharger->setEnabled(!enCours && !enPause);
+
+    // Le pilotage n'a de sens qu'avec une simulation active (en cours ou en pause).
+    const bool pilotable = enCours || enPause;
+    m_btnVxPlus->setEnabled(pilotable);
+    m_btnVxMoins->setEnabled(pilotable);
+    m_btnVyPlus->setEnabled(pilotable);
+    m_btnVyMoins->setEnabled(pilotable);
+}
+
+void GlobalPanel::ajusterVitesse(bool axeX, bool augmenter) {
+    if (m_etat != Etat::EnCours && m_etat != Etat::EnPause)
+        return;
+
+    Vecteur v = m_avion.getVitesseMS();             // m/s
+    const Vecteur acc = m_avion.getAcceleration();      // pas pour augmenter (m/s²)
+    const Vecteur accMin = m_avion.getAccelerationMin(); // pas pour réduire (m/s²)
+
+    if (axeX)
+        v.x += augmenter ? std::fabs(acc.x) : -std::fabs(accMin.x);
+    else
+        v.y += augmenter ? std::fabs(acc.y) : -std::fabs(accMin.y);
+
+    // L'avion ne recule pas : on borne à 0 comme dans update().
+    v.x = std::max(0.f, v.x);
+    v.y = std::max(0.f, v.y);
+    m_avion.setVitesse(v);
+    m_view->update();
+
+    m_statut->setText(QString("Vitesse ajustée : Vx = %1 km/h, Vy = %2 km/h.")
+                          .arg(v.x * 3.6f, 0, 'f', 0)
+                          .arg(v.y * 3.6f, 0, 'f', 0));
 }
 
 void GlobalPanel::lancer() {
