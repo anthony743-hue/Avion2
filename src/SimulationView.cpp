@@ -106,6 +106,6 @@ void SimulationView::paintEvent(QPaintEvent * /*event*/) {
         QFont b = painter.font();
         b.setBold(true);
         painter.setFont(b);
-        painter.drawText(QPointF(margin, margin + 12), "⚠ DÉCROCHAGE");
+        painter.drawText(QPointF(margin, margin + 12), "⚠ DÉCROCHAGE !!!!");
     }
 }
